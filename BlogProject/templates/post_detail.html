@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 card mb-4 mt-3">
+            <div class="card-body">
+                <h1>
+                    {% block title %}
+                    {{post.title}}
+                    {% endblock %}
+                </h1>
+                <p class="text-muted">
+                    {{post.author}}|{{post.created_on}}
+                </p>
+                <p class="card-text">
+                    {{post.content|safe}}
+                </p>
+            </div>
+        </div>
+        {% block sidebar %}
+        {% include 'sidebar.html' %}
+        {% endblock sidebar %}
+    </div>
+</div>
+
+<!-- Count comments -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 card mb-4 mt-3">
+            <div class="card-body">
+                <h2>{{comments.count}} Comments</h2>
+                {% for c in comments %}
+                <div class="comments" style="padding: 10px;">
+                    <p class="font-weight-bold">
+                        {{c.name}}
+                        <span class=" text-muted font-weight-normal ">
+                            {{c.created_on}}
+                        </span>
+                    </p>
+                    {{c.comment | linebreaks}}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Comment form -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 card mt-3">
+            <div class="card-body">
+                {% if new_comment %}
+                <div class="alert alert-success" role="alert">
+                    Your comment is awaiting moderation
+                </div>
+                {% else %}
+                <h3>Leave a Comment</h3>
+                <form method="POST" style="margin-top: 1.3em;">
+                    {{comment_form | crispy}}
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
